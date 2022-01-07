@@ -1,0 +1,1 @@
+This repository holds Challenges completed for the Cory Althoff book "The Self Taught Programmer"
