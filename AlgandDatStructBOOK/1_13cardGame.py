@@ -105,16 +105,16 @@ class Game:
         
         # Create Test Hand Two. All picture cards in 2 suits (spades and hearts)
         
-        for i in range(11, 15):
-            self.p1.hand.append(Card(i, 0))
-        for j in range(11, 15):
-            self.p2.hand.append(Card(j, 1))
+        #for i in range(11, 15):
+        #    self.p1.hand.append(Card(i, 0))
+        #for j in range(11, 15):
+        #    self.p2.hand.append(Card(j, 1))
 
         # Create Test Hand Three. One picture card for p1 (Jack of spades). All non-picture cards for p2(hearts).
         
-        #self.p1.hand.append(Card(11, 0))
-        #for i in range(2, 11):
-        #    self.p2.hand.append(Card(i, 1))
+        self.p1.hand.append(Card(11, 0))
+        for i in range(2, 11):
+            self.p2.hand.append(Card(i, 1))
 
         # Create Test Hand Four. One picture card for p1 (Jack of spades) plus set of non-picture cards (spades).
         # One picture card for p2 (Jack of hearts) plus set of non-picture cards (hearts).
@@ -137,21 +137,47 @@ class Game:
         '''player parameter is self.p1 or self.p2'''
         player.hand = self.pile.cards + player.hand
 
-
+    # In the game logic we need to know the value of the picture card to determine how many plays 
+    # the other player has to provide a picture card. If they don't provide a picture card within
+    # the 'limit' the round is won and the player collects
+    def picture_card_limit(self, card):
+        '''card about to be played is tested for value(Jack, Queen, King, Ace) \ 
+        and limit for play assigned (1 card, 2 cards, 3 cards, 4 cards, respectively)'''
+        if card in self.jacks:
+            limit = 1
+        elif card in self.queens:
+            limit = 2
+        elif card in self.kings:
+            limit = 3
+        elif card in self.aces:
+            limit = 4
+        else:
+            return "Not Picture Card"
+        
+        return limit 
+            
+        
     def play_game(self):
         
         # cards = self.deck.cards
         print("beginning Strip Jack Naked!")
-        card_p1 = self.p1.play_card()
-    
-        if card_p1 in self.aces:
-            print("Card is Ace")
         
-        card_p2 = self.p2.play_card()
-        self.pile.cards.append(card_p1)
-        self.pile.peek()
-        self.pile.cards.append(card_p2)
-        self.pile.peek()
+        # while loop ends when the hand of one player is empty
+        while len(self.p1.hand) > 0 and len(self.p2.hand) > 0:
+            card_p1 = self.p1.play_card()
+    
+        #if card_p1 in self.aces:
+        #    print("Card is Ace")
+        
+            # print(self.picture_card_limit(card_p1))
+
+            card_p2 = self.p2.play_card()
+            print(self.picture_card_limit(card_p2))
+            
+            self.pile.cards.append(card_p1)
+            self.pile.peek()
+            self.pile.cards.append(card_p2)
+            self.pile.peek()
 
         # self.collect(self.p1)
 
@@ -178,7 +204,7 @@ class Game:
 # 1) create hand from deck.split, deal.
 # 2) draw cards into pile of cards
 # 3) logic of drawing cards and they being picture cards or 2-10
-# 4) picking up pile of cards and adding to back of hand and restarts
+# 4) picking up pile of cards and adding to back of hand and restarts WITH EMPTY PILE
 # 5) game end.        
 
 #c1 = Card(2, 1)
