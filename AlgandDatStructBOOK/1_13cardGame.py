@@ -112,7 +112,14 @@ class Game:
 
         # Create Test Hand Three. One picture card for p1 (Jack of spades). All non-picture cards for p2(hearts).
         
-        self.p1.hand.append(Card(11, 0))
+        #self.p1.hand.append(Card(11, 0))
+        #for i in range(2, 11):
+        #    self.p2.hand.append(Card(i, 1))
+
+
+        # Create Test Hand Threepoint One. One picture card for p1 (Ace of spades). All non-picture cards for p2(hearts).
+        
+        self.p1.hand.append(Card(14, 0))
         for i in range(2, 11):
             self.p2.hand.append(Card(i, 1))
 
@@ -135,7 +142,9 @@ class Game:
     # When a round is won the winner picks up all cards in the pile and adds to back of hand  
     def collect(self, player):
         '''player parameter is self.p1 or self.p2'''
+        print(f"Collecting...for player: {player.name}")
         player.hand = self.pile.cards + player.hand
+    
 
     # In the game logic we need to know the value of the picture card to determine how many plays 
     # the other player has to provide a picture card. If they don't provide a picture card within
@@ -156,28 +165,82 @@ class Game:
         
         return limit 
             
+
+    def game_logic(self, player, card):
+        '''Method called with lead player (self.p1 or self.p2) with the card they just played'''
+        # In two player game need to identify who is playing leading card 
+        # and who is responding
+        if player == self.p1:
+            other_player = self.p2
+        else:
+            other_player = self.p1
         
+        # card response from opposing player
+        other_card = other_player.play_card()
+        self.pile.cards.append(other_card)
+        print(other_player.name)
+        self.pile.peek()
+        
+        # Test statements
+        print(len(self.p1.hand))
+        print(len(self.p2.hand))
+
+        # Check for picture card
+        if card in self.picture_cards:
+            # Set limit for response
+            limit = self.picture_card_limit(card)
+            count = 0
+            
+            # Response loop. Either opposing player has a picture card or they reach limit and lead player
+            # Collects
+            while other_card not in self.picture_cards:
+                count += 1
+                # Test statement
+                print(count)
+                if count == limit:
+                    self.collect(player)
+                    break
+                # Opposing player plays another card - limit not reached and no picture card played
+                other_card = other_player.play_card()
+                self.pile.cards.append(other_card)
+                print(other_player.name)
+                self.pile.peek()
+
+        # ends when the hand of one player is empty - NOT QUITE RIGHT - need to allow for last card and response
+        if len(self.p1.hand) > 0 and len(self.p2.hand) > 0:
+            # Card of lead player NOT a picture card Or picture card played by opposing player.
+            # We call the method again for the other_player with the other_card 
+            self.game_logic(other_player, other_card)
+
     def play_game(self):
         
         # cards = self.deck.cards
         print("beginning Strip Jack Naked!")
         
-        # while loop ends when the hand of one player is empty
+        # while loop ends when the hand of one player is empty. NOT SURE ABOUT THIS???
         while len(self.p1.hand) > 0 and len(self.p2.hand) > 0:
             card_p1 = self.p1.play_card()
+            self.pile.cards.append(card_p1)
+            print(self.p1.name)
+            self.pile.peek()
+            self.game_logic(self.p1, card_p1)
+            
+            
+            
+            #card_p1 = self.p1.play_card()
     
         #if card_p1 in self.aces:
         #    print("Card is Ace")
         
             # print(self.picture_card_limit(card_p1))
 
-            card_p2 = self.p2.play_card()
-            print(self.picture_card_limit(card_p2))
+            #card_p2 = self.p2.play_card()
+            #print(self.picture_card_limit(card_p2))
             
-            self.pile.cards.append(card_p1)
-            self.pile.peek()
-            self.pile.cards.append(card_p2)
-            self.pile.peek()
+            #self.pile.cards.append(card_p1)
+            #self.pile.peek()
+            #self.pile.cards.append(card_p2)
+            #self.pile.peek()
 
         # self.collect(self.p1)
 
