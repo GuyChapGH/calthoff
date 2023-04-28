@@ -21,7 +21,12 @@ class Card:
         return self.values[self.value] + " of " + self.suits[self.suit]
 
     def __eq__(self, other):
-        return self.value == other.value and self.suit == other.suit
+        # We want to identify when None is returned by the play_card() method
+        # So we need to adapt the equality operator for this case. Bit of a hack!!
+        if other == None:
+            return None
+        else:
+            return self.value == other.value and self.suit == other.suit
 
     def __hash__(self):
         return hash(self.values[self.value] + " of " + self.suits[self.suit])    
@@ -55,6 +60,10 @@ class Player:
 
 class Pile:
     def __init__(self):
+        self.cards = []
+    
+    def clear(self):
+        '''Clears the pile.Called between rounds'''
         self.cards = []
     
     def peek(self):
@@ -139,12 +148,35 @@ class Game:
         # Create empty pile of cards
         self.pile = Pile()
 
-    # When a round is won the winner picks up all cards in the pile and adds to back of hand  
+    # When a round is won the winner picks up all cards in the pile, reverses the pile,
+    # and adds to back of hand  
     def collect(self, player):
         '''player parameter is self.p1 or self.p2'''
         print(f"Collecting...for player: {player.name}")
-        player.hand = self.pile.cards + player.hand
+        
+        player.hand = self.pile.cards[::-1] + player.hand
     
+    def loser(self, player):
+        '''This method is called when one player runs out of cards and play_card() returns None.'''
+        if player == self.p1:
+            other_player = self.p2
+        else:
+            other_player = self.p1
+        
+        # Collect is called at the end of the game when the winner picks up all the pile.
+        self.collect(other_player)
+
+        # These print statements allow us to see how the game ended up
+        print(player.name)
+        print(player.hand)
+
+        print(other_player.name)
+        print(other_player.hand)
+
+        # The losing player gets a mention and the program is ended
+        print(f"The game was lost by {player.name}")
+        exit()
+
 
     # In the game logic we need to know the value of the picture card to determine how many plays 
     # the other player has to provide a picture card. If they don't provide a picture card within
@@ -177,6 +209,10 @@ class Game:
         
         # card response from opposing player
         other_card = other_player.play_card()
+        # Checking that the other_player has not run out of cards to play
+        if other_card == None:
+            self.loser(other_player)
+        
         self.pile.cards.append(other_card)
         print(other_player.name)
         self.pile.peek()
@@ -197,33 +233,50 @@ class Game:
                 count += 1
                 # Test statement
                 print(count)
+
+                # Here the other_player has failed to provide a picture card within the limit
+                # The player collects. The round is over and the player restarts the game with a new card.
                 if count == limit:
                     self.collect(player)
-                    break
+                    self.pile.clear()
+                    new_card = player.play_card()
+                    
+                    # Checking that the player has not run out of cards to play. (unlikely as has just picked up the pile!!)
+                    if new_card == None:
+                        self.loser(player)
+                    self.pile.cards.append(new_card)
+                    print(player.name)
+                    self.pile.peek()
+                    self.game_logic(player, new_card)
+
                 # Opposing player plays another card - limit not reached and no picture card played
                 other_card = other_player.play_card()
+                # Checking that the other_player has not run out of cards
+                if other_card == None:
+                    self.loser(other_player)
                 self.pile.cards.append(other_card)
                 print(other_player.name)
                 self.pile.peek()
 
-        # ends when the hand of one player is empty - NOT QUITE RIGHT - need to allow for last card and response
-        if len(self.p1.hand) > 0 and len(self.p2.hand) > 0:
-            # Card of lead player NOT a picture card Or picture card played by opposing player.
-            # We call the method again for the other_player with the other_card 
-            self.game_logic(other_player, other_card)
+        
+        # Card of lead player NOT a picture card Or picture card played by opposing player.
+        # We call the method again for the other_player with the other_card 
+        self.game_logic(other_player, other_card)
 
     def play_game(self):
         
         # cards = self.deck.cards
         print("beginning Strip Jack Naked!")
         
-        # while loop ends when the hand of one player is empty. NOT SURE ABOUT THIS???
-        while len(self.p1.hand) > 0 and len(self.p2.hand) > 0:
-            card_p1 = self.p1.play_card()
-            self.pile.cards.append(card_p1)
-            print(self.p1.name)
-            self.pile.peek()
-            self.game_logic(self.p1, card_p1)
+        # start game with player self.p1 playing first        
+        card_p1 = self.p1.play_card()
+        # Checking that the opening player self.p1 has not run out of cards. (unlikely as the game is just starting!)
+        if card_p1 == None:
+            self.loser(self.p1)   
+        self.pile.cards.append(card_p1)
+        print(self.p1.name)
+        self.pile.peek()
+        self.game_logic(self.p1, card_p1)
             
             
             
