@@ -128,20 +128,20 @@ class Game:
 
         # Create Test Hand Threepoint One. One picture card for p1 (Ace of spades). All non-picture cards for p2(hearts).
         
-        self.p1.hand.append(Card(14, 0))
-        for i in range(2, 11):
-            self.p2.hand.append(Card(i, 1))
+        #self.p1.hand.append(Card(14, 0))
+        #for i in range(2, 11):
+        #    self.p2.hand.append(Card(i, 1))
 
         # Create Test Hand Four. One picture card for p1 (Jack of spades) plus set of non-picture cards (spades).
         # One picture card for p2 (Jack of hearts) plus set of non-picture cards (hearts).
         
-        #for i in range(2, 11):
-        #    self.p1.hand.append(Card(i, 0))
-        #self.p1.hand.append(Card(11, 0))
+        for i in range(2, 11):
+            self.p1.hand.append(Card(i, 0))
+        self.p1.hand.append(Card(11, 0))
 
-        #for j in range(2, 11):
-        #    self.p2.hand.append(Card(j, 1))
-        #self.p2.hand.append(Card(11, 1))
+        for j in range(2, 11):
+            self.p2.hand.append(Card(j, 1))
+        self.p2.hand.append(Card(11, 1))
 
 ###########################################################################################################################
         
@@ -213,6 +213,7 @@ class Game:
         if other_card == None:
             self.loser(other_player)
         
+        # Add card to pile, display name and top card on pile
         self.pile.cards.append(other_card)
         print(other_player.name)
         self.pile.peek()
@@ -244,6 +245,8 @@ class Game:
                     # Checking that the player has not run out of cards to play. (unlikely as has just picked up the pile!!)
                     if new_card == None:
                         self.loser(player)
+                    # Add card to pile, display name and top card on pile
+                    # call game_logic for player to restart
                     self.pile.cards.append(new_card)
                     print(player.name)
                     self.pile.peek()
@@ -254,6 +257,7 @@ class Game:
                 # Checking that the other_player has not run out of cards
                 if other_card == None:
                     self.loser(other_player)
+                # Add card to pile, display name and top card on pile
                 self.pile.cards.append(other_card)
                 print(other_player.name)
                 self.pile.peek()
@@ -280,55 +284,7 @@ class Game:
             
             
             
-            #card_p1 = self.p1.play_card()
-    
-        #if card_p1 in self.aces:
-        #    print("Card is Ace")
-        
-            # print(self.picture_card_limit(card_p1))
-
-            #card_p2 = self.p2.play_card()
-            #print(self.picture_card_limit(card_p2))
             
-            #self.pile.cards.append(card_p1)
-            #self.pile.peek()
-            #self.pile.cards.append(card_p2)
-            #self.pile.peek()
-
-        # self.collect(self.p1)
-
-        # while len(h1 and h2) > 0:
-        #    m = "q to quit. Any " + \
-        #        "key to play:"
-        #    response = input(m)
-        #    if response == 'q':
-        #        break
-        #p1c = self.hand1.rm_card()
-        #p2c = self.hand2.rm_card()
-
-
-
-# Need hand = deck.split (splits deck into two hands one for each player)
-# 
-# Need to draw card from first hand if 2 - 10, other player draws a card
-# if picture card: Jack, Queen, King, Ace other player draws a card and keeps
-# drawing until they draw a picture card or has drawn max cards: ( Ace: 4, King: 3, Queen: 2, Jack: 1)
-# if reach max cards then oppposing player picks up 'pool' of cards. (Need list of pool cards). 
-# Pool of cards added to back of hand and restarts. Game ends when one player has no cards in hand.
-#
-# To think about:
-# 1) create hand from deck.split, deal.
-# 2) draw cards into pile of cards
-# 3) logic of drawing cards and they being picture cards or 2-10
-# 4) picking up pile of cards and adding to back of hand and restarts WITH EMPTY PILE
-# 5) game end.        
-
-#c1 = Card(2, 1)
-#print (c1)
-
-#d1 = Deck()
-# crd1 = d1.rm_card
-#print(d1.rm_card())
 
 g1 = Game()
 
@@ -340,5 +296,3 @@ print(g1.p2.hand)
 
 g1.play_game()
 
-#print(g1.p1.name)
-#print(g1.p1.hand)
