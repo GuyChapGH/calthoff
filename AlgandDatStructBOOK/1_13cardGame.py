@@ -99,9 +99,9 @@ class Game:
         self.p2 = Player(name2)
        
         # Deal the cards to the two players
-        # while len(self.deck.cards) > 0:
-        #    self.p1.hand.append(self.deck.rm_card())
-        #    self.p2.hand.append(self.deck.rm_card())
+        while len(self.deck.cards) > 0:
+            self.p1.hand.append(self.deck.rm_card())
+            self.p2.hand.append(self.deck.rm_card())
 
 ####################################################################################################################        
         
@@ -135,13 +135,13 @@ class Game:
         # Create Test Hand Four. One picture card for p1 (Jack of spades) plus set of non-picture cards (spades).
         # One picture card for p2 (Jack of hearts) plus set of non-picture cards (hearts).
         
-        for i in range(2, 11):
-            self.p1.hand.append(Card(i, 0))
-        self.p1.hand.append(Card(11, 0))
+        #for i in range(2, 11):
+        #    self.p1.hand.append(Card(i, 0))
+        #self.p1.hand.append(Card(11, 0))
 
-        for j in range(2, 11):
-            self.p2.hand.append(Card(j, 1))
-        self.p2.hand.append(Card(11, 1))
+        #for j in range(2, 11):
+        #    self.p2.hand.append(Card(j, 1))
+        #self.p2.hand.append(Card(11, 1))
 
 ###########################################################################################################################
         
